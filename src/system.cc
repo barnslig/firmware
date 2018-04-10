@@ -39,8 +39,8 @@ void System::initialize()
 	// dito
 	wdt_disable();
 
-	// Enable pull-ups on PC3 and PC7 (button pins)
-	PORTC |= _BV(PC3) | _BV(PC7);
+	// Enable pull-ups on PC3 and PC0 (button pins)
+	PORTC |= _BV(PC3) | _BV(PC0);
 
 	display.enable();
 	modem.enable();
@@ -215,7 +215,7 @@ void System::receive(void)
 void System::loop()
 {
 	// First, check for a shutdown request (long press on both buttons)
-	if ((PINC & (_BV(PC3) | _BV(PC7))) == 0) {
+	if ((PINC & (_BV(PC3) | _BV(PC0))) == 0) {
 		/*
 		 * Naptime!
 		 * (But not before both buttons have been pressed for at least
@@ -237,7 +237,7 @@ void System::loop()
 		if ((PINC & _BV(PC3)) == 0) {
 			btnMask = (ButtonMask)(btnMask | BUTTON_RIGHT);
 		}
-		if ((PINC & _BV(PC7)) == 0) {
+		if ((PINC & _BV(PC0)) == 0) {
 			btnMask = (ButtonMask)(btnMask | BUTTON_LEFT);
 		}
 		/*
@@ -245,7 +245,7 @@ void System::loop()
 		* double actions, such as switching to the next/previous pattern
 		* when the user actually wants to press the shutdown combo.
 		*/
-		if ((PINC & (_BV(PC3) | _BV(PC7))) == (_BV(PC3) | _BV(PC7))) {
+		if ((PINC & (_BV(PC3) | _BV(PC0))) == (_BV(PC3) | _BV(PC0))) {
 			cli();
 			if (btnMask == BUTTON_RIGHT) {
 				current_anim_no = (current_anim_no + 1) % storage.numPatterns();
@@ -285,7 +285,7 @@ void System::shutdown()
 	loadPattern_P(shutdownPattern);
 
 	// wait until both buttons are released
-	while (!((PINC & _BV(PC3)) && (PINC & _BV(PC7))))
+	while (!((PINC & _BV(PC3)) && (PINC & _BV(PC0))))
 		display.update();
 
 	// and some more to debounce the buttons (and finish powerdown animation)
@@ -298,12 +298,12 @@ void System::shutdown()
 	display.disable();
 
 	// disable ADC to save power
-	PRR |= _BV(PRADC); 
+	PRR0 |= _BV(PRADC);
 
 	// actual naptime
 
-	// enable PCINT on PC3 (PCINT11) and PC7 (PCINT15) for wakeup
-	PCMSK1 |= _BV(PCINT15) | _BV(PCINT11);
+	// enable PCINT on PC3 (PCINT11) and PC0 (PCINT8) for wakeup
+	PCMSK1 |= _BV(PCINT8) | _BV(PCINT11);
 	PCICR |= _BV(PCIE1);
 
 	// go to power-down mode
@@ -312,7 +312,7 @@ void System::shutdown()
 
 	// execution will resume here - disable PCINT again.
 	// Don't disable PCICR, something else might need it.
-	PCMSK1 &= ~(_BV(PCINT15) | _BV(PCINT11));
+	PCMSK1 &= ~(_BV(PCINT8) | _BV(PCINT11));
 
 	// turn on display
 	loadPattern(current_anim_no);
@@ -322,7 +322,7 @@ void System::shutdown()
 	 * Wait for wakeup button(s) to be released to avoid accidentally
 	 * going back to sleep again or switching the active pattern.
 	 */
-	while (!((PINC & _BV(PC3)) && (PINC & _BV(PC7))))
+	while (!((PINC & _BV(PC3)) && (PINC & _BV(PC0))))
 		display.update();
 
 	// debounce
@@ -332,7 +332,7 @@ void System::shutdown()
 	}
 
 	// enable the ADC !
-	PRR &= ~_BV(PRADC); 
+	PRR0 &= ~_BV(PRADC);
 
 	// finally, turn on the modem...
 	modem.enable();

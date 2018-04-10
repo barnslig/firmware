@@ -51,12 +51,12 @@ void Storage::enable()
 {
 	/*
 	 * Set I2C clock frequency to 100kHz.
-	 * freq = F_CPU / (16 + (2 * TWBR * TWPS) )
+	 * freq = F_CPU / (16 + (2 * TWBR0 * TWPS) )
 	 * let TWPS = "00" = 1
-	 * -> TWBR = (F_CPU / 100000) - 16 / 2
+	 * -> TWBR0 = (F_CPU / 100000) - 16 / 2
 	 */
-	TWSR = 0; // the lower two bits control TWPS
-	TWBR = ((F_CPU / 100000UL) - 16) / 2;
+	TWSR0 = 0; // the lower two bits control TWPS
+	TWBR0 = ((F_CPU / 100000UL) - 16) / 2;
 
 	i2c_read(0, 0, 1, &num_anims);
 }
@@ -68,17 +68,17 @@ void Storage::enable()
  */
 uint8_t Storage::i2c_start_read()
 {
-	TWCR = _BV(TWINT) | _BV(TWSTA) | _BV(TWEN);
-	while (!(TWCR & _BV(TWINT)));
-	if (!(TWSR & 0x18)) // 0x08 == START ok, 0x10 == RESTART ok
+	TWCR0 = _BV(TWINT) | _BV(TWSTA) | _BV(TWEN);
+	while (!(TWCR0 & _BV(TWINT)));
+	if (!(TWSR0 & 0x18)) // 0x08 == START ok, 0x10 == RESTART ok
 		return I2C_START_ERR;
 
 	// Note: The R byte ("... | 1") causes the TWI module to switch to
 	// Master Receive mode
-	TWDR = (I2C_EEPROM_ADDR << 1) | 1;
-	TWCR = _BV(TWINT) | _BV(TWEN);
-	while (!(TWCR & _BV(TWINT)));
-	if (TWSR != 0x40) // 0x40 == SLA+R transmitted, ACK receveid
+	TWDR0 = (I2C_EEPROM_ADDR << 1) | 1;
+	TWCR0 = _BV(TWINT) | _BV(TWEN);
+	while (!(TWCR0 & _BV(TWINT)));
+	if (TWSR0 != 0x40) // 0x40 == SLA+R transmitted, ACK receveid
 		return I2C_ADDR_ERR;
 
 	return I2C_OK;
@@ -90,15 +90,15 @@ uint8_t Storage::i2c_start_read()
  */
 uint8_t Storage::i2c_start_write()
 {
-	TWCR = _BV(TWINT) | _BV(TWSTA) | _BV(TWEN);
-	while (!(TWCR & _BV(TWINT)));
-	if (!(TWSR & 0x18)) // 0x08 == START ok, 0x10 == RESTART ok
+	TWCR0 = _BV(TWINT) | _BV(TWSTA) | _BV(TWEN);
+	while (!(TWCR0 & _BV(TWINT)));
+	if (!(TWSR0 & 0x18)) // 0x08 == START ok, 0x10 == RESTART ok
 		return I2C_START_ERR;
 
-	TWDR = (I2C_EEPROM_ADDR << 1) | 0;
-	TWCR = _BV(TWINT) | _BV(TWEN);
-	while (!(TWCR & _BV(TWINT)));
-	if (TWSR != 0x18) // 0x18 == SLA+W transmitted, ACK received
+	TWDR0 = (I2C_EEPROM_ADDR << 1) | 0;
+	TWCR0 = _BV(TWINT) | _BV(TWEN);
+	while (!(TWCR0 & _BV(TWINT)));
+	if (TWSR0 != 0x18) // 0x18 == SLA+W transmitted, ACK received
 		return I2C_ADDR_ERR;
 
 	return I2C_OK;
@@ -109,7 +109,7 @@ uint8_t Storage::i2c_start_write()
  */
 void Storage::i2c_stop()
 {
-	TWCR = _BV(TWINT) | _BV(TWSTO) | _BV(TWEN);
+	TWCR0 = _BV(TWINT) | _BV(TWSTO) | _BV(TWEN);
 }
 
 /*
@@ -121,10 +121,10 @@ uint8_t Storage::i2c_send(uint8_t len, uint8_t *data)
 	uint8_t pos = 0;
 
 	for (pos = 0; pos < len; pos++) {
-		TWDR = data[pos];
-		TWCR = _BV(TWINT) | _BV(TWEN);
-		while (!(TWCR & _BV(TWINT)));
-		if (TWSR != 0x28) // 0x28 == byte transmitted, ACK received
+		TWDR0 = data[pos];
+		TWCR0 = _BV(TWINT) | _BV(TWEN);
+		while (!(TWCR0 & _BV(TWINT)));
+		if (TWSR0 != 0x28) // 0x28 == byte transmitted, ACK received
 			return pos;
 	}
 
@@ -142,13 +142,13 @@ uint8_t Storage::i2c_receive(uint8_t len, uint8_t *data)
 	for (pos = 0; pos < len; pos++) {
 		if (pos == len-1) {
 			// Don't ACK the last byte
-			TWCR = _BV(TWINT) | _BV(TWEN);
+			TWCR0 = _BV(TWINT) | _BV(TWEN);
 		} else {
 			// Automatically send ACK
-			TWCR = _BV(TWINT) | _BV(TWEN) | _BV(TWEA);
+			TWCR0 = _BV(TWINT) | _BV(TWEN) | _BV(TWEA);
 		}
-		while (!(TWCR & _BV(TWINT)));
-		data[pos] = TWDR;
+		while (!(TWCR0 & _BV(TWINT)));
+		data[pos] = TWDR0;
 		/*
 		 * No error handling here -- We send the acks, the EEPROM only
 		 * supplies raw data, so there's no way of knowing whether it's still

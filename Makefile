@@ -1,7 +1,7 @@
-MCU ?= attiny88
-#AVRDUDE_PROGRAMMER ?= usbasp
+MCU ?= atmega328pb
+AVRDUDE_PROGRAMMER ?= usbasp
 #AVRDUDE_PROGRAMMER ?= dragon_isp
-AVRDUDE_PROGRAMMER ?= usbtiny
+#AVRDUDE_PROGRAMMER ?= usbtiny
 
 AVRCC ?= avr-gcc
 AVRCXX ?= avr-g++
@@ -10,7 +10,7 @@ AVRNM ?= avr-nm
 AVROBJCOPY ?= avr-objcopy
 AVROBJDUMP ?= avr-objdump
 
-MCU_FLAGS = -mmcu=attiny88 -DF_CPU=8000000UL
+MCU_FLAGS = -D__AVR_DEV_LIB_NAME__=m328pb -mmcu=${MCU} -DF_CPU=8000000UL
 
 SHARED_FLAGS = ${MCU_FLAGS} -I. -Os -Wall -Wextra -pedantic
 SHARED_FLAGS += -funsigned-char -funsigned-bitfields -fpack-struct -fshort-enums

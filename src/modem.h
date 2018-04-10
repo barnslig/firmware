@@ -19,8 +19,8 @@
 #define MODEM_PCINT		PCINT24
 #define MODEM_PCMSK		PCMSK3
 #define MODEM_PCIE		PCIE3
-#define MODEM_PIN		PA0
-#define MODEM_DDR		DDRA
+#define MODEM_PIN		PE2
+#define MODEM_DDR		DDRE
 
 /**
  * Receive-only modem. Sets up a pin change interrupt on the modem pin

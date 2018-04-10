@@ -42,7 +42,7 @@ void Display::enable()
 	DDRD = 0xff;
 
 	// Enable 8bit counter with prescaler=8 (-> timer frequency = 1MHz)
-	TCCR0A = _BV(CS01);
+	TCCR0B = _BV(CS01);
 	// raise timer interrupt on counter overflow (-> interrupt frequency = ~4kHz)
 	TIMSK0 = _BV(TOIE0);
 }

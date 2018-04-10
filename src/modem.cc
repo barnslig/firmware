@@ -69,21 +69,21 @@ void Modem::buffer_clear() {                 // needed that to avoid mess with f
  */
 void Modem::enable()  {
 	/* Enable R1 */
-	DDRA  |= _BV(PA3);
-	PORTA |= _BV(PA3);
+	DDRE  |= _BV(PE1);
+	PORTE |= _BV(PE1);
 	DDRC |= _BV(PC2);  // use E3 and E2 to indicate bit detection
 
 	/* configure and enable ADC   */
 	ADCSRA = _BV(ADEN) + _BV(ADIE) + _BV(ADPS2) +  _BV(ADPS0) +_BV(ADATE) ;
 	//  ADC prescaler 32 = 250KhZ - actually a bit overclocked ...
-	ADMUX = _BV(REFS0) + 6;  // chn6 = PA0 / ADC6
+	ADMUX = _BV(REFS0) + 6;  // chn6 = PE2 / ADC6
 	/*  start free running mode ** */
 	ADCSRA |= _BV(ADSC);
 
 #ifdef SPI_DBG
 	TIMSK0 &= ~_BV(TOIE0); // disable Led display! (use SPI for debugging output)
 	PORTB=0; PORTD=255;
-	PORTA &= ~_BV(PA1);   // slave select enable
+	PORTE &= ~_BV(PE3);   // slave select enable
 	SPCR = (1<<SPE)|(1<<MSTR)|(1<<SPR0)|(1<<SPR1);
 #endif
 
@@ -98,15 +98,15 @@ void Modem::enable()  {
 
 void Modem::disable()
 {
-	PORTA &= ~_BV(PA3);
-	DDRA  &= ~_BV(PA3);
+	PORTE &= ~_BV(PE1);
+	DDRE  &= ~_BV(PE1);
 
 	// disable ADC
 	DDRC &= ~ _BV(PC2);
 	ADCSRA &= ~ _BV(ADEN);
 
 #ifdef SPI_DBG
-	PORTA |= _BV(PA1);  // slave select disable
+	PORTE |= _BV(PE3);  // slave select disable
 	SPCR=0;
 	TIMSK0 |= _BV(TOIE0); // enable Led display !
 #endif
