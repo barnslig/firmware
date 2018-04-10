@@ -160,7 +160,7 @@ class Storage {
 		uint8_t numPatterns() { return num_anims; };
 
 		/**
-		 * Loads pattern number idx from the EEPROM. The 
+		 * Loads pattern number idx from the EEPROM. The
 		 *
 		 * @param idx pattern index (starting with 0)
 		 * @param pointer to the data structure for the pattern. Must be

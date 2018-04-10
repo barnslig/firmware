@@ -161,7 +161,7 @@ class Display {
 		int8_t char_pos;
 
 		/**
-		 * Internal repeat counter (for autoskip function). 
+		 * Internal repeat counter (for autoskip function).
 		 */
 		uint8_t repeat_cnt;
 

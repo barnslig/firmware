@@ -3,7 +3,7 @@
 
 #include <avr/pgmspace.h>
 
-/* 
+/*
  * Font face is based on "Pixel Operator 8" which is licensed under the
  * SIL Open Font License 1.1 (compatible to GPL)
  */
@@ -235,7 +235,5 @@ const glyph_t font[] PROGMEM = {
 	chr_125,
 	chr_126
 };
-
-
 
 #endif /* FONT_H_ */

@@ -14,11 +14,7 @@
 #define FW_REV_MAJOR  2
 #define FW_REV_MINOR  1
 
-
-
 #define SHUTDOWN_THRESHOLD 2048
-
-
 
 /**
  * Contains the system idle loop. Checks for button presses, handles
@@ -153,9 +149,6 @@ class System {
 		 * @param pattern_no index of pattern to show
 		 */
 		void loadPattern(uint8_t pattern_no);
-
-
-
 };
 
 extern System rocket;

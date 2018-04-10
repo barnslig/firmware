@@ -149,7 +149,7 @@ void Display::update() {
 					}
 
 					if (current_anim->repeat) {
-						if (++repeat_cnt == current_anim->repeat) { 
+						if (++repeat_cnt == current_anim->repeat) {
 							rocket.current_anim_no = (rocket.current_anim_no + 1) % storage.numPatterns();
 							rocket.loadPattern(rocket.current_anim_no);
 						}
@@ -187,7 +187,7 @@ void Display::update() {
 							str_pos = (current_anim->length - 1) % 128;
 						}
 						if (current_anim->repeat) {
-							if (++repeat_cnt == current_anim->repeat) { 
+							if (++repeat_cnt == current_anim->repeat) {
 								rocket.current_anim_no = (rocket.current_anim_no + 1) % storage.numPatterns();
 								rocket.loadPattern(rocket.current_anim_no);
 							}

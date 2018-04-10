@@ -4,9 +4,9 @@
  * Audio modem for Attiny85 & other AVR chips with modifications
  *
  * Author: Jari Tulilahti
- * 
- * Modifications for V2.0 (sine-wave-based transmission and ADC/sampling) 
- * by Chris Veigl, Overflo, Chris Hager 
+ *
+ * Modifications for V2.0 (sine-wave-based transmission and ADC/sampling)
+ * by Chris Veigl, Overflo, Chris Hager
  *
  * Copyright: 2014 Rakettitiede Oy and 2016 Daniel Friesel
  * License: LGPLv3, see COPYING, and COPYING.LESSER -files for more info
@@ -19,9 +19,8 @@
 
 extern FECModem modem;
 
-
 // #define SPI_DBG
-// uncomment this for debug output via SPI 
+// uncomment this for debug output via SPI
 // use arduino-sketch in folder /utilities/SPI_debug to see serial console output
 
 bool Modem::newTransmission()
@@ -65,23 +64,21 @@ void Modem::buffer_clear() {                 // needed that to avoid mess with f
 	buffer_head=buffer_tail=0;
 }
 
-
-
 /*
  * Start the modem by enabling Pin Change Interrupts & Timer
  */
 void Modem::enable()  {
 	/* Enable R1 */
 	DDRA  |= _BV(PA3);
-	PORTA |= _BV(PA3);	
-	DDRC |= _BV(PC2);  // use E3 and E2 to indicate bit detection 
+	PORTA |= _BV(PA3);
+	DDRC |= _BV(PC2);  // use E3 and E2 to indicate bit detection
 
 	/* configure and enable ADC   */
-	ADCSRA = _BV(ADEN) + _BV(ADIE) + _BV(ADPS2) +  _BV(ADPS0) +_BV(ADATE) ; 
+	ADCSRA = _BV(ADEN) + _BV(ADIE) + _BV(ADPS2) +  _BV(ADPS0) +_BV(ADATE) ;
 	//  ADC prescaler 32 = 250KhZ - actually a bit overclocked ...
 	ADMUX = _BV(REFS0) + 6;  // chn6 = PA0 / ADC6
 	/*  start free running mode ** */
-	ADCSRA |= _BV(ADSC);	
+	ADCSRA |= _BV(ADSC);
 
 #ifdef SPI_DBG
 	TIMSK0 &= ~_BV(TOIE0); // disable Led display! (use SPI for debugging output)
@@ -167,16 +164,16 @@ void Modem::receiveADC() {
 	static uint8_t bitlength=0, cnt=0;
 	static uint16_t sampleValue=512, prevValue, accu;
 	static uint8_t actFrequency=FREQ_NONE, prevFrequency=FREQ_NONE;
-	
+
 	prevValue=sampleValue;
-	sampleValue=ADC;		
+	sampleValue=ADC;
 	accu += (sampleValue>prevValue) ? sampleValue-prevValue : prevValue-sampleValue;
 	if (++cnt < NUMBER_OF_SAMPLES) return;   // accumulate NUMBER_OF_SAMPLES values
 
-	activity=accu; 
+	activity=accu;
 	cnt=0; accu=0;
 
-	if (bitlength<100) bitlength++; 
+	if (bitlength<100) bitlength++;
 
 	if ((activity < ACTIVITY_THRESHOLD) && (bitlength > BITLEN_THRESHOLD<<2)) {    // no active sine wave detected
 		prevFrequency=FREQ_NONE;
@@ -185,9 +182,9 @@ void Modem::receiveADC() {
 		modem.buffer_clear();
 		PORTC &= ~ _BV(PC2);        // keep test signal low during idle phase
 		return;
-	} 
+	}
 
-	if (activity >= ACTIVITY_THRESHOLD) 
+	if (activity >= ACTIVITY_THRESHOLD)
 		actFrequency=FREQ_HIGH;
 	else actFrequency=FREQ_LOW;
 
@@ -197,9 +194,9 @@ void Modem::receiveADC() {
 
 				modem_byte = (modem_byte >> 1) | (bitlength < BITLEN_THRESHOLD ? 0x00 : 0x80);
 				PORTC ^= _BV(PC2);   // show actual bit detection for debugging
-				
+
 				// Check if we received complete byte and store it in ring buffer
-				if (!(++modem_bit % 0x08)) 
+				if (!(++modem_bit % 0x08))
 				{
 					buffer_put(modem_byte);
 					#ifdef SPI_DBG
@@ -212,7 +209,6 @@ void Modem::receiveADC() {
 	}
 }
 
-
 /*
  * Pin Change Interrupt Vector. This is for wakeup.
  */
@@ -220,7 +216,7 @@ ISR(PCINT3_vect) {
 }
 
 /*
- * ADC Interrupt Vector.  This is used by te modem. 
+ * ADC Interrupt Vector.  This is used by te modem.
  */
 ISR(ADC_vect) {
 	modem.receiveADC();

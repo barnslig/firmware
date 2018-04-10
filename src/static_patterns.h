@@ -39,7 +39,7 @@ const uint8_t PROGMEM shutdownPattern[] = {
 const uint8_t PROGMEM turnonPattern[] = {
         0x20, 0x40,
         0x0e, 0x0f,
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,        
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
         0x00, 0x00, 0x00, 0x18, 0x18, 0x00, 0x00, 0x00,
         0x00, 0x00, 0x18, 0x18, 0x18, 0x18, 0x00, 0x00,
         0x00, 0x18, 0x18, 0x18, 0x18, 0x18, 0x18, 0x00,
@@ -64,9 +64,9 @@ const uint8_t PROGMEM emptyPattern[] = {
 	0x10, 0x29,
 	0xc0, 0x00,
 	' ',   1,  'v', FW_REV_MAJOR+'0' , '.', FW_REV_MINOR+'0',' ','-',
-        ' ','B', 'l', 'i', 'n', 'k', 'e', 'n', 'r', 'o', 'c', 'k', 'e','t', 
-        ' ', 'S', 'p', 'e', 'i', 'c', 'h','e', 'r', ' ', 'i', 's', 't', 
-        ' ', 'l', 'e', 'e', 'r',' ' 
+        ' ','B', 'l', 'i', 'n', 'k', 'e', 'n', 'r', 'o', 'c', 'k', 'e','t',
+        ' ', 'S', 'p', 'e', 'i', 'c', 'h','e', 'r', ' ', 'i', 's', 't',
+        ' ', 'l', 'e', 'e', 'r',' '
 };
 #else
 
@@ -74,8 +74,8 @@ const uint8_t PROGMEM emptyPattern[] = {
         0x10, 0x28,
         0xd0, 0x00,
         ' ',   1, 'v', FW_REV_MAJOR+'0' , '.', FW_REV_MINOR+'0',' ','-',
-        ' ','B', 'l', 'i', 'n', 'k', 'e', 'n', 'r', 'o', 'c', 'k', 'e','t', 
-        ' ', 'S', 't', 'o', 'r', 'a', 'g','e', ' ', 'i', 's', 
+        ' ','B', 'l', 'i', 'n', 'k', 'e', 'n', 'r', 'o', 'c', 'k', 'e','t',
+        ' ', 'S', 't', 'o', 'r', 'a', 'g','e', ' ', 'i', 's',
         ' ', 'e', 'm', 'p', 't', 'y'
 };
 

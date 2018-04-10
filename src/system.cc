@@ -2,8 +2,8 @@
  * Version: 2.0
  * Copyright (C) 2016 by Daniel Friesel
  *
- * Modifications for V2.0 (sine-wave-based transmission and ADC/sampling) 
- * by Chris Veigl, Overflo, Chris Hager 
+ * Modifications for V2.0 (sine-wave-based transmission and ADC/sampling)
+ * by Chris Veigl, Overflo, Chris Hager
  *
  * License: You may use, redistribute and/or modify this file under the terms
  * of either:
@@ -46,24 +46,11 @@ void System::initialize()
 	modem.enable();
 	storage.enable();
 
-	//storage.reset();
-	//storage.save((uint8_t *)"\x10\x0a\x11\x00nootnoot");
-	//storage.save((uint8_t *)"\x10\x09\x20\x00" "fnordor");
-	//storage.save((uint8_t *)"\x10\x05\x20\x00 \x01 ");
-	//storage.save((uint8_t *)"\x20\x22\x08\x02"
-	//		"\x00\x04\x22\x02\x22\x04\x00\x00"
-	//		"\x00\x00\x00\x00\x00\x00\x00\x00"
-	//		"\x00\x04\x22\x02\x22\x04\x00\x00"
-	//		"\x00\x00\x00\x00");
-	//storage.append((uint8_t *)"\x00\x00\x00\x00");
-
 	sei();
 
 	current_anim_no = 0;
 
-        loadPattern_P(turnonPattern);
-
-	//loadPattern(0);
+	loadPattern_P(turnonPattern);
 }
 
 void System::loadPattern_P(const uint8_t *pattern_ptr)
@@ -134,12 +121,12 @@ void System::receive(void)
 			remaining_bytes--;
 		}
 	}
-	
-	
+
+
 	// parser for new V2.0 protocol, see /docs/blinkenrocket_debugging.pdf
 	switch(rxExpect) {
 		case START1:
-			if (rx_byte == BYTE_START1) { 
+			if (rx_byte == BYTE_START1) {
 				rxExpect = START2;
 			}
 			break;
@@ -164,7 +151,7 @@ void System::receive(void)
 			if (rx_byte == BYTE_PATTERN1)
 			rxExpect = PATTERN2;
 			else if (rx_byte == BYTE_END) {
-				// PORTC ^= _BV(PC2);   // indicate frame end detection 
+				// PORTC ^= _BV(PC2);   // indicate frame end detection
 				storage.sync();
 				current_anim_no = 0;
 				loadPattern(0);
@@ -318,7 +305,7 @@ void System::shutdown()
 	// enable PCINT on PC3 (PCINT11) and PC7 (PCINT15) for wakeup
 	PCMSK1 |= _BV(PCINT15) | _BV(PCINT11);
 	PCICR |= _BV(PCIE1);
-	
+
 	// go to power-down mode
 	SMCR = _BV(SM1) | _BV(SE);
 	asm("sleep");
